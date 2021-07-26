@@ -1,6 +1,8 @@
 package com.bamboo.mycontact;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,19 +49,26 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView contactName;
-        ImageView contactIcon;
+        ImageView contactProfileImage;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             contactName = (TextView) itemView.findViewById(R.id.contactName);
-            contactIcon = (ImageView) itemView.findViewById(R.id.contactIcon);
+            contactProfileImage = (ImageView) itemView.findViewById(R.id.contactProfileImage);
         }
 
         public void setItem(Contact item) {
             contactName.setText(item.getName());
-            // contactIcon.setImageResource(item.());
+
+            byte[] bytes = item.getByteArray();
+            if (bytes != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                contactProfileImage.setImageBitmap(bitmap);
+            } else {
+                contactProfileImage.setImageResource(R.drawable.ic_baseline_account_circle_24);
+            }
         }
     }
 }

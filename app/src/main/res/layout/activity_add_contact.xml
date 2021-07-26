@@ -7,6 +7,15 @@
     android:orientation="vertical"
     tools:context=".AddContactActivity">
 
+    <ImageView
+        android:id="@+id/imageViewAddProfile"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:onClick="imageViewOnClick"
+        android:src="@drawable/ic_baseline_account_circle_24"/>
+
     <LinearLayout
         android:layout_marginTop="50dp"
         android:layout_width="match_parent"

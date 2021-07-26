@@ -40,47 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         initList();
         showList();
-
-        /*
-
-        // add items to arraylist
-        items = new ArrayList<>();
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-        items.add(new ContactItem("kjs", "010-1234-5678"));
-
-
-        adapter.setItems(items);
-
-
-         */
     }
-
-    /*
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        clearList();
-        showList();
-    }*/
 
 
     public void initList() {
@@ -103,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         List<Contact> list = db.contactDao().getAll();
 
         for (Contact item : list) {
-            items.add(new Contact(item.getName(), item.getMobile()));
+            items.add(new Contact(item.getName(), item.getMobile(), item.getByteArray()));
         }
 
         adapter.setItems(items);
