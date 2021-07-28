@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".AddContactActivity">
+    tools:context=".activity.AddContactActivity">
 
     <ImageView
         android:id="@+id/imageViewAddProfile"

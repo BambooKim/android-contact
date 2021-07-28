@@ -3,12 +3,16 @@ package com.bamboo.mycontact.database;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Arrays;
 
 @Entity
 public class Contact {
+
+    @Ignore
+    private boolean selected;
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -17,11 +21,18 @@ public class Contact {
     @ColumnInfo(name = "profile_image", typeAffinity = ColumnInfo.BLOB)
     private byte[] byteArray;
 
-
     public Contact(String name, String mobile, byte[] byteArray) {
         this.name = name;
         this.mobile = mobile;
         this.byteArray = byteArray;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public int getId() {

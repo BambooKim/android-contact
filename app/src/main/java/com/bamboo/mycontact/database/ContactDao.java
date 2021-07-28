@@ -13,6 +13,9 @@ public interface ContactDao {
     @Query("SELECT * FROM Contact")
     List<Contact> getAll();
 
+    @Query("DELETE FROM Contact where id=:contactId")
+    void deleteById(int contactId);
+
     @Insert
     void insert(Contact contact);
 

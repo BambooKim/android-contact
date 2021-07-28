@@ -1,4 +1,4 @@
-package com.bamboo.mycontact;
+package com.bamboo.mycontact.activity;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bamboo.mycontact.R;
 import com.bamboo.mycontact.database.Contact;
 import com.bumptech.glide.Glide;
 
@@ -26,8 +27,8 @@ public class AddContactActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    EditText editTextAddName, editTextAddPhone;
-    ImageView imageViewAddProfile;
+    private EditText editTextAddName, editTextAddPhone;
+    private ImageView imageViewAddProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,22 +49,11 @@ public class AddContactActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.buttonAddSave:
-
                 String className = imageViewAddProfile.getDrawable().getClass().getSimpleName();
 
                 byte[] byteArray = null;
-
                 if (className.equals("BitmapDrawable")) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-                    Bitmap bitmap = ((BitmapDrawable) imageViewAddProfile.getDrawable()).getBitmap();
-
-                    float scale = (float) 1024 / (float) bitmap.getWidth();
-                    int width = (int) (bitmap.getWidth() * scale);
-                    int height = (int) (bitmap.getHeight() * scale);
-                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-                    resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byteArray = stream.toByteArray();
+                    byteArray = bitmapToByteArray(imageViewAddProfile);
                 }
 
                 String name = editTextAddName.getText().toString().trim();
@@ -89,6 +79,20 @@ public class AddContactActivity extends AppCompatActivity {
                 finish();
                 break;
         }
+    }
+
+    private byte[] bitmapToByteArray(ImageView imageView) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+        float scale = (float) 1024 / (float) bitmap.getWidth();
+        int width = (int) (bitmap.getWidth() * scale);
+        int height = (int) (bitmap.getHeight() * scale);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        return stream.toByteArray();
     }
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(

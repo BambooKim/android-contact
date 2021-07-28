@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/main_action_delete"
+        android:title="삭제"
+        android:visible="true"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/main_action_select_all"
+        android:icon="@drawable/ic_baseline_check_box_outline_blank_24"
+        android:title="전체"
+        android:visible="false"
+        app:showAsAction="always" />
+
+</menu>
