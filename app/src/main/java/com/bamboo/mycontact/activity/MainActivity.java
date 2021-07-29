@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bamboo.mycontact.ContactListAdapter;
@@ -29,6 +30,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView textViewContactCount;
     private RecyclerView recyclerView;
     private ContactListAdapter adapter;
     private MenuItem buttonSelectAll, buttonDelete;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(findViewById(R.id.activity_main_toolbar));
 
+        textViewContactCount = (TextView) findViewById(R.id.textViewMainCount);
         addFab = (FloatingActionButton) findViewById(R.id.addContactFab);
         deleteFab = (FloatingActionButton) findViewById(R.id.deleteContactFab);
         deleteFab.setVisibility(View.INVISIBLE);
@@ -164,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         adapter.setItems(items);
+
+        textViewContactCount.setText(adapter.getItemCount() + "개의 연락처");
     }
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(

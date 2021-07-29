@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,53 +19,69 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bamboo.mycontact.R;
-import com.bamboo.mycontact.database.Contact;
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 
-public class AddContactActivity extends AppCompatActivity {
+public class EditContactActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private EditText editTextAddName, editTextAddPhone;
-    private ImageView imageViewAddProfile;
+    private EditText editTextEditName, editTextEditPhone;
+    private ImageView imageViewEditProfile;
+
+    private int id;
+    private String name, phone;
+    private byte[] bytes = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_contact);
+        setContentView(R.layout.activity_edit_contact);
 
-        editTextAddName = (EditText) findViewById(R.id.editTextAddName);
-        editTextAddPhone = (EditText) findViewById(R.id.editTextAddPhone);
-        imageViewAddProfile = (ImageView) findViewById(R.id.imageViewAddProfile);
+        editTextEditName = (EditText) findViewById(R.id.editTextEditName);
+        editTextEditPhone = (EditText) findViewById(R.id.editTextEditPhone);
+        imageViewEditProfile = (ImageView) findViewById(R.id.imageViewEditProfile);
+
+        Intent intent = getIntent();
+        id = intent.getIntExtra("id", -1);
+        name = intent.getStringExtra("name");
+        phone = intent.getStringExtra("phone");
+        bytes = intent.getByteArrayExtra("bytes");
+
+        editTextEditName.setText(name);
+        editTextEditPhone.setText(phone);
+
+        if (bytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            imageViewEditProfile.setImageBitmap(bitmap);
+        }
     }
 
-
     public void onClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent resultIntent = new Intent(getApplicationContext(), ContactInfoActivity.class);
 
         switch (view.getId()) {
-            case R.id.buttonAddCancel:
-                setResult(RESULT_CANCELED, intent);
+            case R.id.buttonEditCancel:
+                setResult(RESULT_CANCELED, resultIntent);
                 finish();
                 break;
-            case R.id.buttonAddSave:
-                String className = imageViewAddProfile.getDrawable().getClass().getSimpleName();
+            case R.id.buttonEditSave:
 
-                byte[] byteArray = null;
+                String className = imageViewEditProfile.getDrawable().getClass().getSimpleName();
+
                 if (className.equals("BitmapDrawable")) {
-                    byteArray = bitmapToByteArray(imageViewAddProfile);
+                    bytes = bitmapToByteArray(imageViewEditProfile);
                 }
 
-                String name = editTextAddName.getText().toString().trim();
-                String phone = editTextAddPhone.getText().toString().trim();
+                name = editTextEditName.getText().toString().trim();
+                phone = editTextEditPhone.getText().toString().trim();
 
                 if (name.length() == 0) {
                     if (phone.length() == 0) {
                         Toast.makeText(getApplicationContext(), "저장할 내용이 없어 저장하지 않았습니다.",
                                 Toast.LENGTH_SHORT).show();
-                        setResult(RESULT_CANCELED, intent);
+                        setResult(RESULT_CANCELED, resultIntent);
                         finish();
                         break;
                     } else {
@@ -72,11 +89,19 @@ public class AddContactActivity extends AppCompatActivity {
                     }
                 }
 
+                Log.d(TAG, name);
+                Log.d(TAG, phone);
+
                 Toast.makeText(getApplicationContext(), "저장!",
                         Toast.LENGTH_SHORT).show();
 
-                MainActivity.db.contactDao().insert(new Contact(name, phone, byteArray));
-                setResult(RESULT_OK, intent);
+                MainActivity.db.contactDao().updateById(id, name, phone, bytes);
+
+                resultIntent.putExtra("name", name);
+                resultIntent.putExtra("phone", phone);
+                resultIntent.putExtra("bytes", bytes);
+
+                setResult(RESULT_OK, resultIntent);
                 finish();
                 break;
         }
@@ -107,9 +132,9 @@ public class AddContactActivity extends AppCompatActivity {
                         Intent intent = result.getData();
                         Uri uri = intent.getData();
 
-                        Glide.with(AddContactActivity.this)
+                        Glide.with(EditContactActivity.this)
                                 .load(uri)
-                                .into(imageViewAddProfile);
+                                .into(imageViewEditProfile);
                     }
                 }
             }

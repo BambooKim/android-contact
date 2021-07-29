@@ -9,9 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".activity.EditContactActivity"></activity>
         <activity
             android:name=".activity.ContactInfoActivity"
-            android:parentActivityName=".activity.MainActivity"/>
+            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.AddContactActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>

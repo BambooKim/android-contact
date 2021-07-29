@@ -6,4 +6,8 @@
         android:title="삭제"
         app:showAsAction="never" />
 
+    <item android:id="@+id/info_action_modify"
+        android:title="편집"
+        app:showAsAction="never" />
+
 </menu>

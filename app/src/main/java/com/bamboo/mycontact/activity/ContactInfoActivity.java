@@ -1,5 +1,9 @@
 package com.bamboo.mycontact.activity;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -19,6 +24,8 @@ import android.widget.Toast;
 import com.bamboo.mycontact.R;
 
 public class ContactInfoActivity extends AppCompatActivity {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     private TextView infoName, infoPhone;
     private ImageView profileImage;
@@ -56,6 +63,7 @@ public class ContactInfoActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.info_bar_menu, menu);
@@ -70,10 +78,53 @@ public class ContactInfoActivity extends AppCompatActivity {
                 alertDialog();
 
                 return true;
+            case R.id.info_action_modify:
+                Intent intent = new Intent(getApplicationContext(), EditContactActivity.class);
+
+                intent.putExtra("id", id);
+                intent.putExtra("name", name);
+                intent.putExtra("phone", phone);
+                intent.putExtra("bytes", bytes);
+
+                launcher.launch(intent);
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    switch (result.getResultCode()) {
+                        case RESULT_CANCELED:
+                            break;
+                        case RESULT_OK:
+
+                            Intent resultIntent = result.getData();
+                            String _name = resultIntent.getStringExtra("name");
+                            String _phone = resultIntent.getStringExtra("phone");
+                            byte[] _bytes = resultIntent.getByteArrayExtra("bytes");
+
+                            infoName.setText(_name);
+                            infoPhone.setText(_phone);
+                            if (_bytes != null) {
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(_bytes, 0, _bytes.length);
+                                profileImage.setImageBitmap(bitmap);
+                            }
+
+
+                            Log.d(TAG, _name);
+                            Log.d(TAG, _phone);
+
+                            break;
+                    }
+                }
+            }
+    );
 
     private void alertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

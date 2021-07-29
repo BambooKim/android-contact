@@ -16,6 +16,11 @@ public interface ContactDao {
     @Query("DELETE FROM Contact where id=:contactId")
     void deleteById(int contactId);
 
+    @Query("UPDATE Contact " +
+            "SET name=:contactName, mobile=:contactMobile, profile_image=:contactProfileImage " +
+            "WHERE id=:contactId")
+    void updateById(int contactId, String contactName, String contactMobile, byte[] contactProfileImage);
+
     @Insert
     void insert(Contact contact);
 
