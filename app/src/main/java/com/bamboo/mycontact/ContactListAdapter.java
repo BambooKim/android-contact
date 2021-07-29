@@ -49,9 +49,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public void setCheckAll(boolean flag) {
         for (Contact item : items) {
-            //if (item.isSelected() == !flag)
-            //   item.setSelected(flag);
-
             if (item.isSelected() == !flag) {
                 item.setSelected(flag);
 
@@ -76,12 +73,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ContactListAdapter.ViewHolder holder, int position) {
-         Contact item = items.get(position);
+        Contact item = items.get(position);
 
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(item.isSelected());
-
-
 
         if (isDeleteMode) {
             holder.checkBox.setVisibility(View.VISIBLE);
@@ -98,14 +93,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     selectedItems.add(items.get(position));
 
                     MainActivity.selectedCallback(holder.itemView.getContext(), getSelectedCount());
-
-                    //Toast.makeText(holder.itemView.getContext(), "Checked", Toast.LENGTH_SHORT).show();
                 } else {
                     selectedItems.remove(items.get(position));
 
                     MainActivity.selectedCallback(holder.itemView.getContext(), getSelectedCount());
-
-                    //Toast.makeText(holder.itemView.getContext(), "Check Canceled", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -128,7 +119,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         ImageView contactProfileImage;
         CheckBox checkBox;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -141,10 +131,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 public void onClick(View v) {
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
-                        // TODO : use pos.
                         Contact item = items.get(pos);
-
-                        // Toast.makeText(v.getContext(), item.toString(), Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(v.getContext(), ContactInfoActivity.class);
                         intent.putExtra("id", item.getId());

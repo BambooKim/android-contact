@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
     public static AppDatabase db;
 
     public static void selectedCallback(Context context, int count) {
-        // Toast.makeText(context, Integer.toString(count), Toast.LENGTH_SHORT).show();
-
         if (count > 0) {
             deleteFab.setVisibility(View.VISIBLE);
         } else {
@@ -79,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // super.onBackPressed();
-
         if (isDeleteMode) {
             adapter.setDeleteMode(false);
             adapter.notifyDataSetChanged();
@@ -120,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             case R.id.main_action_select_all:
-                // Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
-
                 if (isSelectedAll) {
                     item.setIcon(R.drawable.ic_baseline_check_box_outline_blank_24);
                     isSelectedAll = false;
@@ -139,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
 
                     deleteFab.setVisibility(View.VISIBLE);
                 }
-
 
                 return true;
             default:
@@ -167,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
         List<Contact> list = db.contactDao().getAll();
 
         for (Contact item : list) {
-            // items.add(new Contact(item.getName(), item.getMobile(), item.getByteArray()));
             items.add(item);
         }
 
@@ -198,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
                 launcher.launch(intent);
                 break;
             case R.id.deleteContactFab:
-
                 ArrayList<Contact> deleteItems = new ArrayList<>();
                 deleteItems = adapter.getSelectedItems();
 
@@ -206,19 +197,23 @@ public class MainActivity extends AppCompatActivity {
                     db.contactDao().deleteById(item.getId());
                 }
 
-                adapter.setDeleteMode(false);
-                buttonSelectAll.setVisible(false);
-                buttonDelete.setVisible(true);
-                isDeleteMode = false;
-                deleteFab.setVisibility(View.INVISIBLE);
-                addFab.setVisibility(View.VISIBLE);
-                adapter.notifyDataSetChanged();
-                clearList();
-                showList();
-
-                Toast.makeText(getApplicationContext(), "연락처를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+                afterDeleteAction();
 
                 break;
         }
+    }
+
+    public void afterDeleteAction() {
+        adapter.setDeleteMode(false);
+        buttonSelectAll.setVisible(false);
+        buttonDelete.setVisible(true);
+        isDeleteMode = false;
+        deleteFab.setVisibility(View.INVISIBLE);
+        addFab.setVisibility(View.VISIBLE);
+        adapter.notifyDataSetChanged();
+        clearList();
+        showList();
+
+        Toast.makeText(getApplicationContext(), "연락처를 삭제했습니다.", Toast.LENGTH_SHORT).show();
     }
 }
