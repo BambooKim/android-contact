@@ -6,13 +6,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,10 +35,17 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    String[] permission_list = {
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.SEND_SMS
+    };
+
+    private final String TAG = this.getClass().getSimpleName();
+
     private TextView textViewContactCount;
     private RecyclerView recyclerView;
     private ContactListAdapter adapter;
-    private MenuItem buttonSelectAll, buttonDelete;
+    private MenuItem buttonSelectAll, buttonDelete, searchItem;
     private static FloatingActionButton addFab, deleteFab;
 
     private ArrayList<Contact> items;
@@ -67,7 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 .allowMainThreadQueries().build();
 
         initList();
-        showList();
+        showList(db.contactDao().getAll());
+
+        checkPermission();
     }
 
     @Override
@@ -75,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         clearList();
-        showList();
+        showList(db.contactDao().getAll());
     }
 
     @Override
@@ -84,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             adapter.setDeleteMode(false);
             adapter.notifyDataSetChanged();
 
+            searchItem.setVisible(true);
             buttonDelete.setVisible(true);
             buttonSelectAll.setVisible(false);
             addFab.setVisibility(View.VISIBLE);
@@ -101,8 +116,39 @@ public class MainActivity extends AppCompatActivity {
         buttonSelectAll = menu.findItem(R.id.main_action_select_all);
         buttonDelete = menu.findItem(R.id.main_action_delete);
 
+        searchItem = menu.findItem(R.id.main_action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(queryTextListener);
+
         return true;
     }
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            // Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (newText.length() == 0) {
+                clearList();
+                showList(db.contactDao().getAll());
+            } else {
+                List<Contact> list = new ArrayList<>();
+
+                list.addAll(db.contactDao().searchByName("%" + newText + "%"));
+                list.addAll(db.contactDao().searchByPhone("%" + newText + "%"));
+
+                clearList();
+                showList(list);
+            }
+
+            return false;
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -113,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
                 item.setVisible(false);
                 addFab.setVisibility(View.INVISIBLE);
+
+                searchItem.setVisible(false);
 
                 buttonSelectAll.setVisible(true);
                 isDeleteMode = true;
@@ -143,6 +191,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        for (int i = 0; i < grantResults.length; i++) {
+            if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 주어졌을때
+                Log.d(TAG, "Permission Granted: " + permissions[i]);
+            } else {
+                // 권한이 거절되었을
+                Log.d(TAG, "Permission Denied: " + permissions[i]);
+            }
+        }
+    }
+
     public void initList() {
         items = new ArrayList<>();
 
@@ -159,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
         items = new ArrayList<>();
     }
 
-    public void showList() {
-        List<Contact> list = db.contactDao().getAll();
+    public void showList(List<Contact> list) {
+        // List<Contact> list = db.contactDao().getAll();
 
         for (Contact item : list) {
             items.add(item);
@@ -181,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case RESULT_OK:
                             clearList();
-                            showList();
+                            showList(db.contactDao().getAll());
                             break;
                     }
                 }
@@ -217,8 +280,23 @@ public class MainActivity extends AppCompatActivity {
         addFab.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
         clearList();
-        showList();
+        showList(db.contactDao().getAll());
 
         Toast.makeText(getApplicationContext(), "연락처를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void checkPermission() {
+        // 현재 안드로이 버전이 6.0 미만이면 종료
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
+        for (String permission : permission_list) {
+            int chk = checkSelfPermission(permission);
+
+            if (chk == PackageManager.PERMISSION_DENIED) {
+                requestPermissions(permission_list, 0);
+            }
+        }
     }
 }

@@ -38,7 +38,63 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout   
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="25dp"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabInfoCall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:onClick="onClick"
+                        app:srcCompat="@drawable/ic_baseline_call_24"
+                        tools:ignore="VectorDrawableCompat" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/_fabInfoCall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:clickable="false"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_baseline_call_24"
+                        tools:ignore="VectorDrawableCompat" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="15dp" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabInfoSMS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:onClick="onClick"
+                        app:srcCompat="@drawable/ic_baseline_message_24"
+                        tools:ignore="VectorDrawableCompat" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/_fabInfoSMS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:clickable="false"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_baseline_message_24"
+                        tools:ignore="VectorDrawableCompat" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_width="match_parent"

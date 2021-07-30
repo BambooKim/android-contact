@@ -12,16 +12,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bamboo.mycontact.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ContactInfoActivity extends AppCompatActivity {
 
@@ -29,6 +33,7 @@ public class ContactInfoActivity extends AppCompatActivity {
 
     private TextView infoName, infoPhone;
     private ImageView profileImage;
+    private FloatingActionButton fabInfoCall, fabInfoSMS, _fabInfoCall, _fabInfoSMS;
 
     private int id;
     private String name, phone;
@@ -45,6 +50,11 @@ public class ContactInfoActivity extends AppCompatActivity {
         infoName = (TextView) findViewById(R.id.textViewInfoName);
         infoPhone = (TextView) findViewById(R.id.textViewInfoPhone);
         profileImage = (ImageView) findViewById(R.id.imageViewInfoProfileImage);
+        fabInfoCall = (FloatingActionButton) findViewById(R.id.fabInfoCall);
+        fabInfoSMS = (FloatingActionButton) findViewById(R.id.fabInfoSMS);
+        _fabInfoCall = (FloatingActionButton) findViewById(R.id._fabInfoCall);
+        _fabInfoSMS = (FloatingActionButton) findViewById(R.id._fabInfoSMS);
+
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id", -1);
@@ -55,6 +65,14 @@ public class ContactInfoActivity extends AppCompatActivity {
         infoName.setText(name);
         infoPhone.setText(phone);
 
+        if (phone.equals("")) {
+            fabInfoSMS.setVisibility(View.GONE);
+            fabInfoCall.setVisibility(View.GONE);
+
+            _fabInfoSMS.setVisibility(View.VISIBLE);
+            _fabInfoCall.setVisibility(View.VISIBLE);
+        }
+
         if (bytes != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             profileImage.setImageBitmap(bitmap);
@@ -63,6 +81,32 @@ public class ContactInfoActivity extends AppCompatActivity {
         }
     }
 
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fabInfoCall:
+                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel: " + phone));
+
+                try {
+                    startActivity(callIntent);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+                break;
+            case R.id.fabInfoSMS:
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                sendIntent.setData(Uri.parse("sms: " + phone));
+
+                try {
+                    startActivity(sendIntent);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+                break;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,6 +153,8 @@ public class ContactInfoActivity extends AppCompatActivity {
                             String _phone = resultIntent.getStringExtra("phone");
                             byte[] _bytes = resultIntent.getByteArrayExtra("bytes");
 
+                            phone = _phone;
+
                             infoName.setText(_name);
                             infoPhone.setText(_phone);
                             if (_bytes != null) {
@@ -116,6 +162,13 @@ public class ContactInfoActivity extends AppCompatActivity {
                                 profileImage.setImageBitmap(bitmap);
                             }
 
+                            if (!_phone.equals("")) {
+                                _fabInfoSMS.setVisibility(View.GONE);
+                                _fabInfoCall.setVisibility(View.GONE);
+
+                                fabInfoSMS.setVisibility(View.VISIBLE);
+                                fabInfoCall.setVisibility(View.VISIBLE);
+                            }
 
                             Log.d(TAG, _name);
                             Log.d(TAG, _phone);

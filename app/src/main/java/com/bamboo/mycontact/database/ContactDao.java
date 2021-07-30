@@ -13,6 +13,12 @@ public interface ContactDao {
     @Query("SELECT * FROM Contact")
     List<Contact> getAll();
 
+    @Query("SELECT * FROM Contact where name LIKE :name")
+    List<Contact> searchByName(String name);
+
+    @Query("SELECT * FROM Contact WHERE mobile LIKE :mobile")
+    List<Contact> searchByPhone(String mobile);
+
     @Query("DELETE FROM Contact where id=:contactId")
     void deleteById(int contactId);
 
